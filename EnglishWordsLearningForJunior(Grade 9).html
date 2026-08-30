@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>单词背诵器</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+    background:#121212;
+    color:#ffffff;
+    font-family:system-ui, sans-serif;
+    padding:30px 20px;
+}
+#wordBox{
+    border:2px solid #444444;
+    border-radius:22px;
+    min-height:320px;
+    padding:40px 20px;
+    font-size:48px;
+    text-align:center;
+    line-height:1.6;
+    margin-bottom:40px;
+}
+.btn-wrap{
+    display:flex;
+    gap:24px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+button{
+    background:#1f1f1f;
+    color:#fff;
+    border:2px solid #555;
+    border-radius:16px;
+    font-size:28px;
+    padding:18px 42px;
+    cursor:pointer;
+}
+button:hover{
+    border-color:#888;
+}
+</style>
+</head>
+<body>
+
+<div id="wordBox"></div>
+<div class="btn-wrap">
+    <button onclick="prevWord()">上一词</button>
+    <button onclick="toggleCn()">显示/隐藏释义</button>
+    <button onclick="nextWord()">下一词</button>
+</div>
+
+<script>
+const wordlist = [
+{"en":"textbook","cn":"n.教科书；课本"},
+{"en":"conversation","cn":"n.交谈；谈话"},
+{"en":"aloud","cn":"adv.大声地；出声地"},
+{"en":"pronunciation","cn":"n.发音；读音"},
+{"en":"sentence","cn":"n.句子"},
+{"en":"patient","cn":"adj.有耐心的 n.病人"},
+{"en":"secret","cn":"n.秘密；秘诀 adj.秘密的"},
+{"en":"expression","cn":"n.表达；表情"},
+{"en":"discover","cn":"v.发现；发觉"},
+{"en":"grammar","cn":"n.语法"},
+{"en":"repeat","cn":"v.重复；重做"},
+{"en":"note","cn":"n.笔记；记录 v.注意；指出"},
+{"en":"pal","cn":"n.朋友；伙伴"},
+{"en":"physics","cn":"n.物理；物理学"},
+{"en":"chemistry","cn":"n.化学"},
+{"en":"memorize","cn":"v.记忆；记住"},
+{"en":"pattern","cn":"n.模式；方式"},
+{"en":"increase","cn":"v.&n.增加；增长"},
+{"en":"speed","cn":"n.速度"},
+{"en":"partner","cn":"n.搭档；同伴"},
+{"en":"born","cn":"v.出生"},
+{"en":"ability","cn":"n.能力；才能"},
+{"en":"create","cn":"v.创造；创建"},
+{"en":"brain","cn":"n.大脑"},
+{"en":"active","cn":"adj.活跃的；积极的"},
+{"en":"attention","cn":"n.注意；关注"},
+{"en":"connect","cn":"v.连接；与……联系"},
+{"en":"overnight","cn":"adv.一夜之间；在夜间"},
+{"en":"knowledge","cn":"n.知识；学问"},
+{"en":"lifelong","cn":"adj.终身的"},
+{"en":"wisely","cn":"adv.明智地；聪明地"},
+{"en":"look up","cn":"查阅；抬头看"},
+{"en":"be born with","cn":"天生具有"},
+{"en":"pay attention to","cn":"注意"},
+{"en":"connect … with","cn":"把……和……联系起来"},
+
+{"en":"mooncake","cn":"n.月饼"},
+{"en":"lantern","cn":"n.灯笼"},
+{"en":"stranger","cn":"n.陌生人"},
+{"en":"relative","cn":"n.亲属；亲戚"},
+{"en":"pound","cn":"n.磅；英镑"},
+{"en":"folk","cn":"adj.民间的；民俗的"},
+{"en":"goddess","cn":"n.女神"},
+{"en":"steal","cn":"v.偷；窃取(stole‑stolen)"},
+{"en":"lay","cn":"v.放置；下蛋(laid‑laid)"},
+{"en":"admire","cn":"v.欣赏；仰慕"},
+{"en":"tie","cn":"n.领带 v.捆；束"},
+{"en":"haunted","cn":"adj.有鬼魂出没的；闹鬼的"},
+{"en":"ghost","cn":"n.鬼；鬼魂"},
+{"en":"trick","cn":"n.花招；把戏"},
+{"en":"treat","cn":"n.款待；招待 v.招待；请（客）"},
+{"en":"spider","cn":"n.蜘蛛"},
+{"en":"Christmas","cn":"n.圣诞节"},
+{"en":"novel","cn":"n.小说"},
+{"en":"business","cn":"n.生意；商业"},
+{"en":"punish","cn":"v.处罚；惩罚"},
+{"en":"warn","cn":"v.警告；告诫"},
+{"en":"present","cn":"n.现在；礼物 adj.现在的"},
+{"en":"nobody","cn":"pron.没有人"},
+{"en":"warmth","cn":"n.温暖；暖和"},
+{"en":"spread","cn":"v.传播；展开(spread‑spread) n.蔓延；传播"},
+{"en":"put on","cn":"增加（体重）；发胖"},
+{"en":"lay out","cn":"摆开；布置"},
+{"en":"end up","cn":"最终成为；最后处于"},
+
+{"en":"restroom","cn":"n.（美）洗手间；公共厕所"},
+{"en":"stamp","cn":"n.邮票；印章"},
+{"en":"bookstore","cn":"n.书店"},
+{"en":"beside","cn":"prep.在……旁边；在……附近"},
+{"en":"postcard","cn":"n.明信片"},
+{"en":"pardon","cn":"interj.请再说一遍 v.原谅"},
+{"en":"rush","cn":"v.&n.仓促；急促"},
+{"en":"suggest","cn":"v.建议；提议"},
+{"en":"staff","cn":"n.管理人员；职工"},
+{"en":"grape","cn":"n.葡萄"},
+{"en":"central","cn":"adj.中心的；中央的"},
+{"en":"mail","cn":"v.邮寄；发电子邮件 n.邮件；信件"},
+{"en":"east","cn":"adj.东方的 adv.向东 n.东方"},
+{"en":"fascinating","cn":"adj.迷人的；极有吸引力的"},
+{"en":"inexpensive","cn":"adj.不昂贵的"},
+{"en":"uncrowded","cn":"adj.不拥挤的；人少的"},
+{"en":"convenient","cn":"adj.便利的；方便的"},
+{"en":"mall","cn":"n.商场；购物中心"},
+{"en":"clerk","cn":"n.职员"},
+{"en":"corner","cn":"n.拐角；角落"},
+{"en":"pass by","cn":"路过；经过"},
+{"en":"pardon me","cn":"抱歉；对不起；请再说一遍"},
+
+{"en":"background","cn":"n.背景"},
+{"en":"interview","cn":"v.采访；面试 n.面试；访谈"},
+{"en":"Asian","cn":"adj.亚洲（人）的 n.亚洲人"},
+{"en":"deal","cn":"v.对付；对待(dealt‑dealt)"},
+{"en":"shyness","cn":"n.害羞；腼腆"},
+{"en":"dare","cn":"v.敢于；胆敢"},
+{"en":"ton","cn":"n.吨；(pl.)大量；许多"},
+{"en":"private","cn":"adj.私人的；私密的"},
+{"en":"guard","cn":"n.警卫；看守 v.守卫；保卫"},
+{"en":"require","cn":"v.需要；要求"},
+{"en":"European","cn":"adj.欧洲（人）的 n.欧洲人"},
+{"en":"African","cn":"adj.非洲（人）的 n.非洲人"},
+{"en":"British","cn":"adj.英国（人）的"},
+{"en":"insect","cn":"n.昆虫"},
+{"en":"ant","cn":"n.蚂蚁"},
+{"en":"speech","cn":"n.讲话；发言"},
+{"en":"public","cn":"n.民众 adj.公开的；公众的"},
+{"en":"seldom","cn":"adv.不常；很少"},
+{"en":"influence","cn":"v.&n.影响"},
+{"en":"absent","cn":"adj.缺席；不在"},
+{"en":"fail","cn":"v.不及格；失败"},
+{"en":"examination","cn":"n.考试；审查"},
+{"en":"exactly","cn":"adv.确切地；正好"},
+{"en":"pride","cn":"n.自豪；骄傲"},
+{"en":"proud","cn":"adj.自豪的；骄傲的"},
+{"en":"grandson","cn":"n.孙子；外孙"},
+{"en":"from time to time","cn":"时常；有时"},
+{"en":"deal with","cn":"对付；应对"},
+{"en":"tons of","cn":"大量"},
+{"en":"be absent from","cn":"缺席"},
+{"en":"in public","cn":"公开地"},
+{"en":"take pride in","cn":"为……感到自豪"},
+{"en":"be proud of","cn":"为……骄傲"},
+{"en":"in person","cn":"亲身；亲自"},
+
+{"en":"material","cn":"n.材料；原料"},
+{"en":"cotton","cn":"n.棉花；棉织物"},
+{"en":"wood","cn":"n.木头；木材"},
+{"en":"glass","cn":"n.玻璃"},
+{"en":"coin","cn":"n.硬币"},
+{"en":"fork","cn":"n.餐叉；叉子"},
+{"en":"blouse","cn":"n.（女式）短上衣；衬衫"},
+{"en":"silver","cn":"n.银；银器 adj.银色的"},
+{"en":"steel","cn":"n.钢；钢铁"},
+{"en":"grass","cn":"n.草；草地"},
+{"en":"leaf","cn":"n.叶子(pl.leaves)"},
+{"en":"produce","cn":"v.生产；制造；出产"},
+{"en":"widely","cn":"adv.广泛地；普遍地"},
+{"en":"process","cn":"v.加工；处理 n.过程"},
+{"en":"product","cn":"n.产品；制品"},
+{"en":"local","cn":"adj.当地的；本地的"},
+{"en":"avoid","cn":"v.避免；回避"},
+{"en":"handbag","cn":"n.手提包"},
+{"en":"mobile","cn":"adj.可移动的；非固定的"},
+{"en":"everyday","cn":"adj.每天的；日常的"},
+{"en":"boss","cn":"n.老板；上司"},
+{"en":"surface","cn":"n.表面；表层"},
+{"en":"traffic","cn":"n.交通；路上行驶的车辆"},
+{"en":"postman","cn":"n.邮递员"},
+{"en":"cap","cn":"n.帽子"},
+{"en":"glove","cn":"n.手套"},
+{"en":"be made of","cn":"由……制成（看得出原料）"},
+{"en":"be made from","cn":"由……制成（看不出原料）"},
+{"en":"be made in","cn":"在……制造"},
+
+{"en":"style","cn":"n.样式；款式"},
+{"en":"project","cn":"n.项目；工程"},
+{"en":"pleasure","cn":"n.高兴；愉快"},
+{"en":"daily","cn":"adj.每日的；日常的"},
+{"en":"pioneer","cn":"n.先锋；先驱"},
+{"en":"list","cn":"v.列表；列清单 n.名单；清单"},
+{"en":"mention","cn":"v.提到；说到"},
+{"en":"boil","cn":"v.煮沸；烧开"},
+{"en":"remain","cn":"v.保持不变；剩余"},
+{"en":"smell","cn":"n.气味 v.发出……气味；闻到(smelt/smelled)"},
+{"en":"national","cn":"adj.国家的；民族的"},
+{"en":"trade","cn":"n.贸易；交易 v.做买卖；从事贸易"},
+{"en":"doubt","cn":"n.疑惑；疑问 v.怀疑"},
+{"en":"low","cn":"adj.低的；矮的"},
+{"en":"somebody","cn":"pron.某人"},
+{"en":"accident","cn":"n.意外；事故"},
+{"en":"nearly","cn":"adv.几乎；差不多"},
+{"en":"ruler","cn":"n.统治者；支配者"},
+{"en":"website","cn":"n.网站"},
+{"en":"invent","cn":"v.发明；创造"},
+{"en":"invention","cn":"n.发明；发明物"},
+{"en":"customer","cn":"n.顾客；客户"},
+{"en":"by accident","cn":"偶然；意外地"},
+{"en":"take place","cn":"发生；出现"},
+{"en":"without doubt","cn":"毫无疑问；的确"},
+
+{"en":"smoke","cn":"v.吸烟；冒烟 n.烟"},
+{"en":"pierce","cn":"v.扎；刺破；穿透"},
+{"en":"license","cn":"n.证件；许可证"},
+{"en":"silly","cn":"adj.愚蠢的；傻的"},
+{"en":"earring","cn":"n.耳环；耳饰"},
+{"en":"choose","cn":"v.选择(chose‑chosen)"},
+{"en":"allow","cn":"v.允许"},
+{"en":"manage","cn":"v.设法做到；管理"},
+{"en":"society","cn":"n.社会"},
+{"en":"educate","cn":"v.教育；教导"},
+{"en":"chance","cn":"n.机会；可能性"},
+{"en":"enter","cn":"v.进来；进去"},
+{"en":"support","cn":"v.&n.支持"},
+{"en":"choice","cn":"n.选择；抉择"},
+{"en":"be allowed to do","cn":"被允许做"},
+{"en":"get in the way of","cn":"挡……的路；妨碍"},
+
+{"en":"belong","cn":"v.属于"},
+{"en":"value","cn":"n.价值；有用性 v.重视；珍视"},
+{"en":"attend","cn":"v.出席；参加"},
+{"en":"picnic","cn":"n.野餐"},
+{"en":"noise","cn":"n.噪音；声响"},
+{"en":"policeman","cn":"n.警察(pl.policemen)"},
+{"en":"mystery","cn":"n.奥秘；神秘事物"},
+{"en":"receive","cn":"v.收到；接到"},
+{"en":"historian","cn":"n.历史学家；史学工作者"},
+{"en":"leader","cn":"n.领导；领袖"},
+{"en":"midsummer","cn":"n.仲夏；盛夏"},
+{"en":"medical","cn":"adj.医疗的；医学的"},
+{"en":"purpose","cn":"n.目的；目标"},
+{"en":"prevent","cn":"v.阻止；阻挠"},
+{"en":"circle","cn":"n.圆圈 v.圈出"},
+{"en":"honor","cn":"v.尊重；表示敬意 n.荣誉"},
+{"en":"belong to","cn":"属于"},
+{"en":"pick up","cn":"捡起；拾起"},
+
+{"en":"prefer","cn":"v.更喜欢"},
+{"en":"suppose","cn":"v.料想；假定"},
+{"en":"smooth","cn":"adj.平滑的；悦耳的"},
+{"en":"spare","cn":"adj.空闲的；不用的 v.抽出；留出"},
+{"en":"case","cn":"n.情况；实情"},
+{"en":"war","cn":"n.战争；战争状态"},
+{"en":"stick","cn":"v.粘贴；将……刺入(stuck‑stuck)"},
+{"en":"down","cn":"adj.悲哀；沮丧"},
+{"en":"dialog","cn":"n.对话；对白"},
+{"en":"documentary","cn":"n.纪录片"},
+{"en":"drama","cn":"n.戏；剧"},
+{"en":"plenty","cn":"pron.大量；众多"},
+{"en":"shut","cn":"v.关闭；关上(shut‑shut)"},
+{"en":"superhero","cn":"n.超级英雄"},
+{"en":"intelligent","cn":"adj.有才智的；聪明的"},
+{"en":"sense","cn":"v.感觉到；意识到 n.感觉；意识"},
+{"en":"sadness","cn":"n.悲伤；悲痛"},
+{"en":"pain","cn":"n.痛苦；疼痛；苦恼"},
+{"en":"reflect","cn":"v.反映；映射"},
+{"en":"perform","cn":"v.表演；执行"},
+{"en":"pity","cn":"n.遗憾；怜悯"},
+{"en":"total","cn":"adj.总的；全体的 n.总数；合计"},
+{"en":"master","cn":"n.大师；能手 v.掌握"},
+{"en":"praise","cn":"v.&n.表扬；赞扬"},
+{"en":"recall","cn":"v.回忆起；回想起"},
+{"en":"wound","cn":"n.伤；伤口 v.使（身体）受伤"},
+{"en":"dance to","cn":"跟着……跳舞"},
+{"en":"sing along with","cn":"跟着一起唱"},
+{"en":"prefer … to …","cn":"比起……更喜欢……"},
+{"en":"stick to","cn":"坚持；固守"},
+{"en":"plenty of","cn":"大量；充足"},
+{"en":"shut off","cn":"关闭；停止运转"},
+{"en":"once in a while","cn":"偶尔；间或"},
+{"en":"custom","cn":"n.风俗；习俗"},
+{"en":"bow","cn":"v.&n.鞠躬"},
+{"en":"kiss","cn":"v.&n.亲吻；接吻"},
+{"en":"supposed","cn":"adj.应该；期望"},
+{"en":"relax","cn":"v.放松；休息"},
+{"en":"value","cn":"v.重视；珍视 n.价值"},
+{"en":"drop","cn":"v.落下；掉下"},
+{"en":"after all","cn":"毕竟；终归"},
+{"en":"noon","cn":"n.中午；正午"},
+{"en":"mad","cn":"adj.疯的；生气"},
+{"en":"passport","cn":"n.护照"},
+{"en":"chalk","cn":"n.粉笔"},
+{"en":"blackboard","cn":"n.黑板"},
+{"en":"northern","cn":"adj.北方的；北部的"},
+{"en":"coast","cn":"n.海岸；海滨"},
+{"en":"season","cn":"n.季；季节"},
+{"en":"knock","cn":"v.敲；击"},
+{"en":"eastern","cn":"adj.东方的；东部的"},
+{"en":"worth","cn":"adj.值得；有……价值"},
+{"en":"manner","cn":"n.方式；方法 (pl.)礼貌；礼仪"},
+{"en":"empty","cn":"adj.空的；空洞的"},
+{"en":"basic","cn":"adj.基本的；基础的"},
+{"en":"exchange","cn":"n.&v.交换"},
+{"en":"behave","cn":"v.表现；举止"},
+{"en":"except","cn":"prep.除……之外"},
+{"en":"be supposed to","cn":"应该；被期望"},
+{"en":"shake hands","cn":"握手"},
+{"en":"go out of one’s way","cn":"特地；格外努力"},
+{"en":"make … feel at home","cn":"使宾至如归"},
+{"en":"get used to","cn":"习惯于"},
+
+{"en":"drive","cn":"v.迫使(drove‑driven)"},
+{"en":"friendship","cn":"n.友谊；友情"},
+{"en":"king","cn":"n.国王"},
+{"en":"power","cn":"n.力量；权力"},
+{"en":"banker","cn":"n.银行家"},
+{"en":"pale","cn":"adj.苍白的；灰白的"},
+{"en":"examine","cn":"v.检查；审查"},
+{"en":"nor","cn":"conj.&adv.也不"},
+{"en":"palace","cn":"n.宫殿；王宫"},
+{"en":"wealth","cn":"n.财富；富裕"},
+{"en":"grey","cn":"adj.阴沉的；灰色的"},
+{"en":"lemon","cn":"n.柠檬"},
+{"en":"uncomfortable","cn":"adj.不舒服的"},
+{"en":"weight","cn":"n.重量；分量"},
+{"en":"shoulder","cn":"n.肩膀；肩部"},
+{"en":"goal","cn":"n.目标；球门；得分"},
+{"en":"coach","cn":"n.教练；私人教师"},
+{"en":"kick","cn":"v.踢；踹"},
+{"en":"courage","cn":"n.勇敢；勇气"},
+{"en":"pull","cn":"v.拉；拖"},
+{"en":"relief","cn":"n.轻松；解脱"},
+{"en":"nod","cn":"v.点头"},
+{"en":"agreement","cn":"n.（意见或看法）一致；同意"},
+{"en":"fault","cn":"n.过失；缺点"},
+{"en":"would rather","cn":"宁愿"},
+{"en":"drive sb. crazy/mad","cn":"使某人发疯/发狂"},
+{"en":"leave out","cn":"忽略；不提及；不包括"},
+{"en":"call in","cn":"召来；叫来"},
+{"en":"prime minister","cn":"首相；大臣"},
+{"en":"to start with","cn":"起初；开始时"},
+{"en":"kick sb. off","cn":"开除"},
+{"en":"be hard on sb.","cn":"对某人苛刻；对某人要求严厉"},
+{"en":"pull together","cn":"齐心协力"},
+
+{"en":"unexpected","cn":"adj.出乎意料的"},
+{"en":"by the time","cn":"在……以前"},
+{"en":"backpack","cn":"n.背包；旅行包"},
+{"en":"oversleep","cn":"v.睡过头；睡得太久(overslept‑overslept)"},
+{"en":"ring","cn":"v.鸣响；发出铃声(rang‑rung) n.戒指"},
+{"en":"go off","cn":"（闹钟）发出响声"},
+{"en":"rush","cn":"v.&n.冲；奔"},
+{"en":"give … a lift","cn":"捎（某人）一程"},
+{"en":"at least","cn":"至少；起码"},
+{"en":"west","cn":"n.西；西方 adj.向西的；西部 adv.向西；朝西"},
+{"en":"cream","cn":"n.奶油；乳脂"},
+{"en":"pie","cn":"n.果馅饼；果馅派"},
+{"en":"show up","cn":"赶到；露面"},
+{"en":"bean","cn":"n.豆；豆荚"},
+{"en":"market","cn":"n.市场；集市"},
+{"en":"fool","cn":"n.蠢人；傻瓜 v.愚弄"},
+{"en":"costume","cn":"n.（特定场合）服装；装束"},
+{"en":"embarrassing","cn":"adj.使人害羞的；难堪的"},
+{"en":"announce","cn":"v.宣布；宣告"},
+{"en":"spaghetti","cn":"n.意大利面条"},
+{"en":"hoax","cn":"n.骗局；恶作剧"},
+{"en":"sell out","cn":"卖光"},
+{"en":"discovery","cn":"n.发现；发觉"},
+{"en":"lady","cn":"n.女士；女子"},
+{"en":"officer","cn":"n.军官；官员"},
+{"en":"cancel","cn":"v.取消；终止"},
+{"en":"believable","cn":"adj.可相信的；可信任的"},
+{"en":"disappear","cn":"v.消失；不见"},
+
+{"en":"litter","cn":"v.乱扔 n.垃圾；废弃物"},
+{"en":"bottom","cn":"n.底部；最下部"},
+{"en":"fisherman","cn":"n.渔民；钓鱼的人(pl.fishermen)"},
+{"en":"coal","cn":"n.煤；煤块"},
+{"en":"ugly","cn":"adj.丑陋的；难看的"},
+{"en":"cost","cn":"v.花费(cost‑cost) n.花费；价钱"},
+{"en":"wooden","cn":"adj.木制的；木头的"},
+{"en":"plastic","cn":"adj.塑料的 n.塑料；塑胶"},
+{"en":"takeaway","cn":"n.外卖食物"},
+{"en":"bin","cn":"n.垃圾箱"},
+{"en":"shark","cn":"n.鲨鱼"},
+{"en":"fin","cn":"n.（鱼）鳍"},
+{"en":"cruel","cn":"adj.残酷的；残忍的"},
+{"en":"harmful","cn":"adj.有害的"},
+{"en":"chain","cn":"n.链子；链条"},
+{"en":"ecosystem","cn":"n.生态系统"},
+{"en":"industry","cn":"n.工业；行业"},
+{"en":"law","cn":"n.法律；法规"},
+{"en":"scientific","cn":"adj.科学上的；科学的"},
+{"en":"reusable","cn":"adj.可重复使用的"},
+{"en":"transportation","cn":"n.运输业；交通运输"},
+{"en":"recycle","cn":"v.回收利用；再利用"},
+{"en":"napkin","cn":"n.餐巾；餐巾纸"},
+{"en":"throw away","cn":"扔掉；抛弃"},
+{"en":"put … to good use","cn":"好好利用"},
+{"en":"pull down","cn":"拆下；摧毁"},
+{"en":"gate","cn":"n.大门"},
+{"en":"bottle","cn":"n.瓶子"},
+{"en":"president","cn":"n.总统；主席"},
+{"en":"inspiration","cn":"n.灵感；鼓舞人心的人/事"},
+{"en":"metal","cn":"n.金属"},
+{"en":"be harmful to","cn":"对……有害"},
+{"en":"at the top of","cn":"在……顶部"},
+{"en":"the food chain","cn":"食物链"},
+{"en":"take action","cn":"采取行动"},
+
+{"en":"survey","cn":"n.调查"},
+{"en":"standard","cn":"n.标准；水平"},
+{"en":"row","cn":"n.一排；一列；一行"},
+{"en":"keyboard","cn":"n.键盘式电子乐器；键盘"},
+{"en":"method","cn":"n.方法；措施"},
+{"en":"instruction","cn":"n.指示；命令"},
+{"en":"double","cn":"v.加倍；是……的两倍 adj.两倍的；加倍的"},
+{"en":"shall","cn":"modal v.将要；将会"},
+{"en":"overcome","cn":"v.克服；战胜(overcame‑overcome)"},
+{"en":"graduate","cn":"v.毕业；获得学位"},
+{"en":"caring","cn":"adj.体贴人的；关心他人的"},
+{"en":"ours","cn":"pron.我们的"},
+{"en":"senior","cn":"adj.级别（或地位）高的"},
+{"en":"text","cn":"n.课文；文本"},
+{"en":"level","cn":"n.水平"},
+{"en":"degree","cn":"n.学位；度数；程度"},
+{"en":"manager","cn":"n.经理；管理者"},
+{"en":"gentleman","cn":"n.先生；绅士"},
+{"en":"ceremony","cn":"n.典礼；仪式"},
+{"en":"congratulate","cn":"v.祝贺"},
+{"en":"thirsty","cn":"adj.渴望的；口渴的"},
+{"en":"thankful","cn":"adj.感激的；感谢的"},
+{"en":"task","cn":"n.任务；工作"},
+{"en":"ahead","cn":"adv.向前面；在前面"},
+{"en":"separate","cn":"adj.分开的；分离的 v.分开；分离"},
+{"en":"wing","cn":"n.翅膀；翼"},
+{"en":"in a row","cn":"连续几次地"},
+{"en":"make a mess","cn":"弄得一团糟"},
+{"en":"keep one’s cool","cn":"沉住气；保持冷静"},
+{"en":"senior high school","cn":"高中"},
+{"en":"go by","cn":"（时间）逝去；过去"},
+{"en":"be thirsty for","cn":"渴望；渴求"},
+{"en":"be thankful to","cn":"对……心存感激"},
+{"en":"ahead of","cn":"在……前面"},
+{"en":"be responsible for","cn":"对……有责任；负责任"},
+{"en":"separate from","cn":"分离；隔开"}
+]
+
+
+let index = 0;
+let showCn = false;
+const boxDom = document.getElementById("wordBox");
+
+function render(){
+    const item = wordlist[index];
+    if(!item){
+        boxDom.innerText = "全部结束";
+        return;
+    }
+    if(showCn){
+        boxDom.innerText = item.en + "\n\n" + item.cn;
+    }else{
+        boxDom.innerText = item.en;
+    }
+}
+
+function nextWord(){
+    index++;
+    if(index >= wordlist.length) index = 0;
+    render();
+}
+function prevWord(){
+    index--;
+    if(index < 0) index = wordlist.length -1;
+    render();
+}
+function toggleCn(){
+    showCn = !showCn;
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>
+
