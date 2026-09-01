@@ -2,10 +2,6 @@
 
 > Multi-stage English vocabulary learning toolkit from K-12 to IELTS with interactive practice tools
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/EnglishWordsLearning?style=social)
-![License](https://img.shields.io/github/license/yourusername/EnglishWordsLearning)
-![Last commit](https://img.shields.io/github/last-commit/yourusername/EnglishWordsLearning)
-
 ## 🎯 Overview
 
 EnglishWordsLearning is a comprehensive English vocabulary learning toolkit designed for personal study, exam preparation, and word dataset management. The project covers multiple learning stages from primary school through IELTS, providing age-appropriate materials and interactive practice methods.
@@ -111,18 +107,19 @@ We welcome contributions to improve the EnglishWordsLearning toolkit!
 - Propose improvements to existing tools
 - Share ideas for better user experience
 
-**Code Contributions:**
-- Fork the repository and create a feature branch
-- Follow existing code style and structure
-- Test thoroughly before submitting pull requests
-- Document changes in commit messages
+## For contributors / Fork users
+The core UI & logic framework remains stable.
+If you want to load your own vocabulary:
+1. Locate the word‑list JavaScript array inside html file.
+2. Replace or append your own word‑entry objects.
+3. Save and open in browser.
+No need to modify other framework‑related code.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## ⭐ Star History
+## ⭐ Star
 
-If you find this project helpful for your English learning journey, please consider giving it a star on GitHub!
+If you find this project helpful for your English learning journey, please consider giving it a star on GitHub! THANKS!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/EnglishWordsLearning&type=Date)](https://star-history.com/#yourusername/EnglishWordsLearning&Date)
