@@ -1,6 +1,6 @@
 # EnglishWordsLearning
 
-> Multi-stage English vocabulary learning toolkit from K-12 to IELTS with interactive practice tool
+> Multi-stage English vocabulary learning toolkit from K-12 to IELTS with interactive practice tools
 
 ## 🎯 Overview
 
